@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 
 import 'search_text_inherited_widget.dart';
@@ -50,6 +51,7 @@ class SearchHighlightText extends StatelessWidget {
     this.strutStyle,
     this.textWidthBasis,
     this.highlightStyle,
+    this.ignoreDiacritics = false,
   })  : assert(searchText == null || searchRegExp == null),
         super(key: key);
 
@@ -59,6 +61,7 @@ class SearchHighlightText extends StatelessWidget {
   final TextStyle? style;
   final TextStyle? highlightStyle;
   final int? maxLines;
+  final bool ignoreDiacritics;
   final TextOverflow? overflow;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
@@ -103,7 +106,8 @@ class SearchHighlightText extends StatelessWidget {
 
     final textSpans = <TextSpan>[];
     var lastEnd = 0;
-    for (final match in searchRegExp.allMatches(text)) {
+    final t = ignoreDiacritics ? removeDiacritics(text) : text;
+    for (final match in searchRegExp.allMatches(t)) {
       if (match.start > lastEnd) {
         textSpans.add(
           TextSpan(
